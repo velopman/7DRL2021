@@ -160,7 +160,7 @@ func __spawn_enemy(position: Vector2) -> void:
 	var enemy: EnemyController = EnemyController.new(position, options)
 	self.__connect_entity(enemy)
 
-	self.__entities_map.set_cellv(position, 0)
+	self.__entities_map.set_cellv(position, 12)
 	self.__entities.append(enemy)
 
 	self.__enemies.append(enemy)
@@ -186,5 +186,5 @@ func __spawn_player(position: Vector2) -> void:
 	self.__player = PlayerController.new(position, options)
 	self.__connect_entity(self.__player)
 
-	self.__entities_map.set_cellv(position, 0)
+	self.__entities_map.set_cellv(position, 10)
 	self.__entities.append(self.__player)

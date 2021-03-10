@@ -150,7 +150,7 @@ signal spawn_player(position)
 onready var traversable: TileMap = $traversable
 
 func populate_traversable() -> void:
-	for tile in self.tile_map.get_used_cells_by_id(2):
+	for tile in self.tile_map.get_used_cells_by_id(4):
 		self.traversable.set_cellv(tile, 0)
 
 
