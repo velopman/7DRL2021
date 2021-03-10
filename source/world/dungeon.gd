@@ -3,22 +3,24 @@ class_name Dungeon extends Node2D
 const ROOM_COUNT = [10, 15, 20, 30, 1] # Amount of rooms
 
 #Used tiles
-enum Tile {Wall, Exit, Floor, Corner, Background, Door, Error}
+enum Tile {NW, N, NE, W, F, E, SW, S, SE, T, P, G}
 
 
 # Var for this level
 var level_number = 0
 var map = []
-var room_buffer = []
+var portals = []
 var rooms = []
+var room_buffer = []
 var room_count
 var level_size
 var walls: Array
 var exit: Vector2
 
 # Nodes
-onready var tile_map = $TileMap
+onready var tile_map = $TileMap_Level
 onready var rooms_script = $Rooms
+onready var tile_map_things = $TileMap_Things
 
 # Draws the level
 func draw_level():
@@ -26,20 +28,18 @@ func draw_level():
 	tile_map.clear()
 
 	room_count = ROOM_COUNT[level_number]
-	level_size = Vector2(room_count * 10, room_count * 10) # Fix this so it's not hard coded
+	level_size = Vector2(room_count * 20, room_count * 24) # Fix this so it's not hard coded
 	for x in range(level_size.x):
 		map.append([])
 		for y in range(level_size.y):
-			map[x].append(Tile.Background)
-			tile_map.set_cell(x, y, Tile.Background)
+			map[x].append(Tile.G)
+			tile_map.set_cell(x, y, Tile.G)
 
 	var free_regions = [Rect2(Vector2(2, 2), level_size - Vector2(4, 4))]
 	for i in range(room_count):
 		draw_room(free_regions, i == 0)
 		if free_regions.empty():
 			break
-	draw_exit()
-	draw_path()
 
 # Draws all the rooms in the level 18x32-room size 24x38 to have 3 clear rows on each side?
 func draw_room(free_regions, spawn_player: bool):
@@ -60,39 +60,45 @@ func draw_room(free_regions, spawn_player: bool):
 	var room = Rect2(start_x, start_y, size_x, size_y)
 	rooms.append(room)
 
-	# decide for random door placement
-	var door_check = 0
-	while(door_check < 1):
-		var r_y = randi() % int(room_buffer.size())
-		var r_x = randi() % int(room_buffer[0].size())
-		if(room_buffer[r_y][r_x] == "N" || room_buffer[r_y][r_x] == "E" || room_buffer[r_y][r_x] == "W" || room_buffer[r_y][r_x] == "S"):
-			room_buffer[r_y][r_x] = "D"
-			door_check += 1
-
 	# get tile-information from the room_buffer and set the tiles at the right spot.
 	for y in range(room_buffer.size()):
 		for x in range(room_buffer[y - 1].size()):
-			if(room_buffer[y][x] == "N" || room_buffer[y][x] == "E" || room_buffer[y][x] == "W" || room_buffer[y][x] == "S"):
-				tile_map.set_cell(start_x + x, start_y + y, Tile.Wall)
+			if(room_buffer[y][x] == "NW"):
+				tile_map.set_cell(start_x + x, start_y + y, Tile.NW)
+			elif(room_buffer[y][x] == "N"):
+				tile_map.set_cell(start_x + x, start_y + y, Tile.N)	
+			elif(room_buffer[y][x] == "NE"):
+				tile_map.set_cell(start_x + x, start_y + y, Tile.NE)	
+			elif(room_buffer[y][x] == "W"):
+				tile_map.set_cell(start_x + x, start_y + y, Tile.W)	
 			elif(room_buffer[y][x] == "F"):
-				tile_map.set_cell(start_x + x, start_y + y, Tile.Floor)
-			elif(room_buffer[y][x] == "NE" || room_buffer[y][x] == "NW" || room_buffer[y][x] == "SW" || room_buffer[y][x] == "SE"):
-				tile_map.set_cell(start_x + x, start_y + y, Tile.Corner)
-			elif(room_buffer[y][x] == "D"):
-				tile_map.set_cell(start_x + x, start_y + y, Tile.Door)
+				tile_map.set_cell(start_x + x, start_y + y, Tile.F)	
+			elif(room_buffer[y][x] == "E"):
+				tile_map.set_cell(start_x + x, start_y + y, Tile.E)	
+			elif(room_buffer[y][x] == "SW"):
+				tile_map.set_cell(start_x + x, start_y + y, Tile.SW)	
+			elif(room_buffer[y][x] == "S"):
+				tile_map.set_cell(start_x + x, start_y + y, Tile.S)	
+			elif(room_buffer[y][x] == "SE"):
+				tile_map.set_cell(start_x + x, start_y + y, Tile.SE)	
 			elif(room_buffer[y][x] == "P"):
 				if spawn_player:
 					self.emit_signal("spawn_player", Vector2(start_x + x, start_y + y))
-				tile_map.set_cell(start_x + x, start_y + y, Tile.Floor)
+				tile_map.set_cell(start_x + x, start_y + y, Tile.F)
+				tile_map_things.set_cell(start_x + x, start_y + y, Tile.P)
 			elif(room_buffer[y][x] == "M"):
 				self.emit_signal("spawn_enemy", Vector2(start_x + x, start_y + y))
-				tile_map.set_cell(start_x + x, start_y + y, Tile.Floor)
+				tile_map.set_cell(start_x + x, start_y + y, Tile.F)
 			elif(room_buffer[y][x] == 'G'):
 				self.emit_signal("spawn_pick_up", Vector2(start_x + x, start_y + y))
-				tile_map.set_cell(start_x + x, start_y + y, Tile.Floor)
+				tile_map.set_cell(start_x + x, start_y + y, Tile.F)
+			elif(room_buffer[y][x] == "T"):
+				tile_map.set_cell(start_x + x, start_y + y, Tile.F)
+				tile_map_things.set_cell(start_x + x, start_y + y, Tile.T)
+				portals.append(Vector2(start_x + x, start_y + y))
 			else:
 				# error tile so we can figure out if we missed something
-				tile_map.set_cell(start_x + x, start_y + y, Tile.Error)
+				tile_map.set_cell(start_x + x, start_y + y, Tile.N)
 
 	# split up the remaining free areas
 	cut_regions(free_regions, room)
@@ -127,34 +133,6 @@ func cut_regions(free_regions, region_to_cut):
 
 	for region in addition_queue:
 		free_regions.append(region)
-
-# Draws the exit randomly on any wall in the level
-func draw_exit():
-	walls = tile_map.get_used_cells_by_id(0)
-	if(walls.size() != 0):
-		var random = randi() % walls.size()
-		exit = walls[random]
-		tile_map.set_cellv(exit, Tile.Exit)
-
-func draw_path():
-	# graphing all the door tiles
-	var door_graph = AStar2D.new()
-	var doors = tile_map.get_used_cells_by_id(5)
-	var i = 1
-	for door in doors:
-		door_graph .add_point(i, door, 1.0)
-		i += 1
-	# graping all the ground tiles
-	var ground_graph = AStar2D.new()
-	var ground = tile_map.get_used_cells_by_id(4)
-	var j = 1
-	for tile in ground:
-		ground_graph.add_point(j, tile, 1.0)
-		j += 1
-
-	#var path = astar.get_point_path(point_one, point_two)
-	#for position in path:
-		#tile_map.set_cellv(position, Tile.Error)
 
 # Called when the node enters the scene tree for the first time.
 func initialize():
