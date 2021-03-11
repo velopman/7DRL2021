@@ -159,6 +159,9 @@ func get_traversable() -> TileMap:
 
 
 func get_room_for_entity(entity: EntityController) -> Rect2:
+	if !entity:
+		return rooms.front()
+
 	for room in rooms:
 		if room.has_point(entity.position):
 			return room

@@ -32,7 +32,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if !self.__can_update:
+	if !self.__can_update || !self.__player:
 		return
 
 	self.__player.update()

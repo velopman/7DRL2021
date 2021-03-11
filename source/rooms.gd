@@ -12,6 +12,9 @@ func get_room_tiles():
 
 func load_room(file):
 	var f = File.new()
+	if !f.file_exists(file):
+		return [['P', 'F'], ['F', 'F']]
+
 	f.open(file, File.READ)
 
 	var room_array = []
