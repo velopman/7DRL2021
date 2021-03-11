@@ -14,7 +14,7 @@ const INPUT_MAP = {
 
 # Lifecycle methods
 func _init(position: Vector2, options: Dictionary = {}).(position, options) -> void:
-	pass
+	self.tile_index = 10
 
 
 # Public methods

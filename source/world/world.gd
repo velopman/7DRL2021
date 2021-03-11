@@ -116,7 +116,7 @@ func __move_entity(from: Vector2, to: Vector2, entity: EntityController) -> Vect
 
 		self.__entities_map.set_cellv(last_position, TileMap.INVALID_CELL)
 		last_position = from + offset
-		self.__entities_map.set_cellv(last_position, 0)
+		self.__entities_map.set_cellv(last_position, entity.tile_index)
 
 	if last_position != to:
 		entity.position = last_position
@@ -166,7 +166,7 @@ func __spawn_enemy(position: Vector2) -> void:
 	var enemy: EnemyController = EnemyController.new(position, options)
 	self.__connect_entity(enemy)
 
-	self.__entities_map.set_cellv(position, 0)
+	self.__entities_map.set_cellv(position, enemy.tile_index)
 	self.__entities.append(enemy)
 
 	self.__enemies.append(enemy)
@@ -176,7 +176,7 @@ func __spawn_pick_up(position: Vector2) -> void:
 	var pick_up: PickUpController = PickUpController.new(position)
 	self.__connect_entity(pick_up)
 
-	self.__entities_map.set_cellv(position, 1)
+	self.__entities_map.set_cellv(position, pick_up.tile_index)
 	self.__entities.append(pick_up)
 
 
@@ -192,5 +192,5 @@ func __spawn_player(position: Vector2) -> void:
 	self.__player = PlayerController.new(position, options)
 	self.__connect_entity(self.__player)
 
-	self.__entities_map.set_cellv(position, 0)
+	self.__entities_map.set_cellv(position, self.__player.tile_index)
 	self.__entities.append(self.__player)

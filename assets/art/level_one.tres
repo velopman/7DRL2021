@@ -145,7 +145,7 @@
 9/z_index = 0
 10/name = "P"
 10/texture = ExtResource( 1 )
-10/tex_offset = Vector2( 0, 0 )
+10/tex_offset = Vector2( 0, -16 )
 10/modulate = Color( 1, 1, 1, 1 )
 10/region = Rect2( 64, 32, 16, 32 )
 10/tile_mode = 0

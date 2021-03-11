@@ -7,6 +7,7 @@ var type: int = PickUp.Type.MAX
 # Lifecycle methods
 func _init(position: Vector2, options: Dictionary = {}).(position, options) -> void:
 	self.type = randi() % PickUp.Type.MAX
+	self.tile_index = 1
 
 
 # Public methods

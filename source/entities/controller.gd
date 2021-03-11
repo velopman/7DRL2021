@@ -12,6 +12,7 @@ var direction: Vector2 = Vector2.ZERO
 var health: int = 1
 var health_max: int = 1
 var position: Vector2 = Vector2.ZERO
+var tile_index: int = 0
 
 
 # Public methods
