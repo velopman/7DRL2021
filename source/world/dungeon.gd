@@ -66,21 +66,21 @@ func draw_room(free_regions, spawn_player: bool):
 			if(room_buffer[y][x] == "NW"):
 				tile_map.set_cell(start_x + x, start_y + y, Tile.NW)
 			elif(room_buffer[y][x] == "N"):
-				tile_map.set_cell(start_x + x, start_y + y, Tile.N)	
+				tile_map.set_cell(start_x + x, start_y + y, Tile.N)
 			elif(room_buffer[y][x] == "NE"):
-				tile_map.set_cell(start_x + x, start_y + y, Tile.NE)	
+				tile_map.set_cell(start_x + x, start_y + y, Tile.NE)
 			elif(room_buffer[y][x] == "W"):
-				tile_map.set_cell(start_x + x, start_y + y, Tile.W)	
+				tile_map.set_cell(start_x + x, start_y + y, Tile.W)
 			elif(room_buffer[y][x] == "F"):
-				tile_map.set_cell(start_x + x, start_y + y, Tile.F)	
+				tile_map.set_cell(start_x + x, start_y + y, Tile.F)
 			elif(room_buffer[y][x] == "E"):
-				tile_map.set_cell(start_x + x, start_y + y, Tile.E)	
+				tile_map.set_cell(start_x + x, start_y + y, Tile.E)
 			elif(room_buffer[y][x] == "SW"):
-				tile_map.set_cell(start_x + x, start_y + y, Tile.SW)	
+				tile_map.set_cell(start_x + x, start_y + y, Tile.SW)
 			elif(room_buffer[y][x] == "S"):
-				tile_map.set_cell(start_x + x, start_y + y, Tile.S)	
+				tile_map.set_cell(start_x + x, start_y + y, Tile.S)
 			elif(room_buffer[y][x] == "SE"):
-				tile_map.set_cell(start_x + x, start_y + y, Tile.SE)	
+				tile_map.set_cell(start_x + x, start_y + y, Tile.SE)
 			elif(room_buffer[y][x] == "P"):
 				if spawn_player:
 					self.emit_signal("spawn_player", Vector2(start_x + x, start_y + y))
@@ -150,7 +150,7 @@ signal spawn_player(position)
 onready var traversable: TileMap = $traversable
 
 func populate_traversable() -> void:
-	for tile in self.tile_map.get_used_cells_by_id(2):
+	for tile in self.tile_map.get_used_cells_by_id(4):
 		self.traversable.set_cellv(tile, 0)
 
 

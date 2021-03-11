@@ -45,11 +45,16 @@ func __attack_entity(entity: EntityController) -> void:
 		'direction': entity.direction,
 		'speed': 2
 	}
-	var projectile: ProjectileController = ProjectileController.new(entity.position, options)
+
+	var spawn_position: Vector2 = entity.position + entity.direction
+	var projectile: ProjectileController = ProjectileController.new(spawn_position, options)
 	self.__connect_entity(projectile)
 
 	self.__entities.append(projectile)
 	self.__attacks.append(projectile)
+
+	if entity is PlayerController:
+		self.__move_player(entity.position, entity.position, entity)
 
 
 func __center_camera_on_entity(entity: EntityController, pan: bool = false) -> void:
@@ -122,7 +127,8 @@ func __move_entity(from: Vector2, to: Vector2, entity: EntityController) -> Vect
 func __move_player(from: Vector2, to: Vector2, entity: EntityController) -> void:
 	self.__can_update = false
 
-	yield(self.__move_entity(from, to, entity), "completed")
+	if from != to:
+		yield(self.__move_entity(from, to, entity), "completed")
 
 	self.__center_camera_on_entity(entity)
 
