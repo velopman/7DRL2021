@@ -85,7 +85,6 @@ func draw_room(free_regions, spawn_player: bool):
 				if spawn_player:
 					self.emit_signal("spawn_player", Vector2(start_x + x, start_y + y))
 				tile_map.set_cell(start_x + x, start_y + y, Tile.F)
-				tile_map_things.set_cell(start_x + x, start_y + y, Tile.P)
 			elif(room_buffer[y][x] == "M"):
 				self.emit_signal("spawn_enemy", Vector2(start_x + x, start_y + y))
 				tile_map.set_cell(start_x + x, start_y + y, Tile.F)
