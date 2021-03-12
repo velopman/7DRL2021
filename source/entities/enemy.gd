@@ -4,12 +4,12 @@ const WANDER: Array = [
 	Vector2.UP,
 	Vector2.UP,
 	Vector2.UP,
-	Vector2.DOWN,
-	Vector2.DOWN,
-	Vector2.DOWN,
 	Vector2.LEFT,
 	Vector2.LEFT,
 	Vector2.LEFT,
+	Vector2.DOWN,
+	Vector2.DOWN,
+	Vector2.DOWN,
 	Vector2.RIGHT,
 	Vector2.RIGHT,
 	Vector2.RIGHT
@@ -17,12 +17,14 @@ const WANDER: Array = [
 
 var attacking: int = 0
 var wander_index: int = 0
+var wander_offset: int = 0
 
 
 # Lifecycle methods
 func _init(position: Vector2, options: Dictionary = {}).(position, options) -> void:
-	self.tile_index = 16
+	self.tile_index = 16 + randi() % 2
 	self.wander_index = randi() % self.WANDER.size()
+	self.wander_offset = 1 if randi() % 2 else -1
 
 
 # Public methods
@@ -45,7 +47,7 @@ func telegraph(player: PlayerController, world: WorldInterface) -> void:
 
 		self.direction = direction_to_player
 	else:
-		self.wander_index = (self.wander_index + 1) % self.WANDER.size()
+		self.wander_index = (self.wander_index + self.wander_offset + self.WANDER.size()) % self.WANDER.size()
 		self.direction = self.WANDER[self.wander_index]
 
 

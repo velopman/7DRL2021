@@ -8,7 +8,7 @@ signal debug(content)
 
 
 var damage: int = 1
-var direction: Vector2 = Vector2.ZERO
+var direction: Vector2 = Vector2.RIGHT
 var health: int = 1
 var health_max: int = 1
 var position: Vector2 = Vector2.ZERO

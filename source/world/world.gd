@@ -95,6 +95,7 @@ func __dungeon_complete() -> void:
 
 	self.__can_update = true
 
+	self.__redraw()
 	self.__center_camera_on_entity(self.__player, false)
 
 
@@ -104,10 +105,6 @@ func __move_entity(from: Vector2, to: Vector2, entity: EntityController) -> Vect
 		if entity is ProjectileController:
 			entity.call_deferred("emit_signal", "remove")
 		return from
-
-	if entity.owns_tile(self.__entities_map.get_cellv(from)):
-		self.__entities_map.set_cellv(from, TileMap.INVALID_CELL)
-	self.__entities_map.set_cellv(to, entity.tile_index, entity.tile_flip)
 
 	return to
 
@@ -125,12 +122,17 @@ func __move_player(from: Vector2, to: Vector2, entity: EntityController) -> void
 		enemy.update()
 		enemy.telegraph(entity, self.__world_interface)
 
+	self.__redraw()
+
+
+func __redraw() -> void:
+	self.__entities_map.clear()
+
+	for entity in self.__entities:
+		self.__entities_map.set_cellv(entity.position, entity.tile_index, entity.tile_flip)
+
 
 func __remove_entity(entity: EntityController) -> void:
-	var index = self.__entities.find(entity)
-	if index == -1:
-		Logger.warn("Could not remove entity, doesn't belong in entites array")
-
 	self.__entities.erase(entity)
 
 	if entity is EnemyController:
@@ -138,8 +140,6 @@ func __remove_entity(entity: EntityController) -> void:
 		print("Removing enemy ", self.__enemies.size())
 	elif entity is ProjectileController:
 		self.__attacks.erase(entity)
-
-	self.__entities_map.set_cellv(entity.position, TileMap.INVALID_CELL)
 
 
 func __spawn_enemy(position: Vector2) -> void:
@@ -150,9 +150,7 @@ func __spawn_enemy(position: Vector2) -> void:
 	var enemy: EnemyController = EnemyController.new(position, options)
 	self.__connect_entity(enemy)
 
-	self.__entities_map.set_cellv(position, enemy.tile_index)
 	self.__entities.append(enemy)
-
 	self.__enemies.append(enemy)
 
 
@@ -160,15 +158,10 @@ func __spawn_pick_up(position: Vector2) -> void:
 	var pick_up: PickUpController = PickUpController.new(position)
 	self.__connect_entity(pick_up)
 
-	self.__entities_map.set_cellv(position, pick_up.tile_index)
 	self.__entities.append(pick_up)
 
 
 func __spawn_player(position: Vector2) -> void:
-	if self.__player != null:
-		Logger.warn("Player already spawned")
-		return
-
 	var options: Dictionary = {
 		'damage': self.DAMAGE_PLAYER,
 		'health': self.HEALTH_PLAYER
@@ -176,5 +169,4 @@ func __spawn_player(position: Vector2) -> void:
 	self.__player = PlayerController.new(position, options)
 	self.__connect_entity(self.__player)
 
-	self.__entities_map.set_cellv(position, self.__player.tile_index)
 	self.__entities.append(self.__player)

@@ -1,3 +1,3 @@
 class_name PickUp
 
-enum Type {health = 0, damage, potion, ability, MAX}
+enum Type {health = 0, potion, MAX}
