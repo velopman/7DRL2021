@@ -1,5 +1,7 @@
 class_name WorldInterface
 
+signal collision_detected(entity, other)
+
 
 var __entities: Array = []
 var __ray: RayCast2D = null
@@ -27,6 +29,8 @@ func has_line_of_sight(from: EntityController, to: EntityController) -> bool:
 
 func can_traverse(entity: EntityController, position: Vector2) -> bool:
 	if self.__world.get_cellv(position) == TileMap.INVALID_CELL:
+		self.emit_signal("collision_detected", entity, null)
+
 		return false
 
 	for other in self.__entities:
@@ -35,6 +39,8 @@ func can_traverse(entity: EntityController, position: Vector2) -> bool:
 
 		if other.position != position:
 			continue
+
+		self.emit_signal("collision_detected", entity, other)
 
 		return !other.handle_collision(entity)
 

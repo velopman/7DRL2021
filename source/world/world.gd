@@ -93,28 +93,58 @@ func __dungeon_complete() -> void:
 		self.__entities
 	)
 
+	self.__world_interface.connect("collision_detected", self, "__handle_collision")
+
 	self.__can_update = true
 
 	self.__redraw()
 	self.__center_camera_on_entity(self.__player, false)
 
 
-func __move_entity(from: Vector2, to: Vector2, entity: EntityController) -> Vector2:
+func __get_entity_name(entity: EntityController) -> String:
+	if entity is EnemyController:
+		return Entity.ENEMY
+
+	if entity is PickUpController:
+		return Entity.PICK_UP
+
+	if entity is PlayerController:
+		return Entity.PLAYER
+
+	if entity is ProjectileController:
+		return Entity.PROJECTILE
+
+	return Entity.NONE
+
+
+func __handle_collision(entity: EntityController, other: EntityController) -> void:
+	var entities_by_name: Array = [
+		self.__get_entity_name(entity),
+		self.__get_entity_name(other)
+	]
+	entities_by_name.sort()
+
+	match entities_by_name:
+		[Entity.ENEMY, Entity.PROJECTILE]:
+			self.__remove_entity(entity)
+			self.__remove_entity(other)
+		[Entity.NONE, Entity.PROJECTILE]:
+			self.__remove_entity(entity)
+
+
+func __move_entity(from: Vector2, to: Vector2, entity: EntityController) -> void:
+	if from == to:
+		return
+
 	if !self.__world_interface.can_traverse(entity, to):
 		entity.position = from
-		if entity is ProjectileController:
-			entity.call_deferred("emit_signal", "remove")
-		return from
-
-	return to
 
 
 func __move_player(from: Vector2, to: Vector2, entity: EntityController) -> void:
+	self.__move_entity(from, to, entity)
+
 	for attack in self.__attacks:
 		attack.update()
-
-	if from != to:
-		self.__move_entity(from, to, entity)
 
 	self.__center_camera_on_entity(entity)
 
@@ -137,7 +167,6 @@ func __remove_entity(entity: EntityController) -> void:
 
 	if entity is EnemyController:
 		self.__enemies.erase(entity)
-		print("Removing enemy ", self.__enemies.size())
 	elif entity is ProjectileController:
 		self.__attacks.erase(entity)
 

@@ -45,7 +45,7 @@ func telegraph(player: PlayerController, world: WorldInterface) -> void:
 		else:
 			direction_to_player.y = 0.0
 
-		self.direction = direction_to_player
+		self.direction = direction_to_player.normalized()
 	else:
 		self.wander_index = (self.wander_index + self.wander_offset + self.WANDER.size()) % self.WANDER.size()
 		self.direction = self.WANDER[self.wander_index]

@@ -40,6 +40,11 @@ _global_script_classes=[ {
 "path": "res://source/entities/enemies/wanderer.gd"
 }, {
 "base": "Reference",
+"class": "Entity",
+"language": "GDScript",
+"path": "res://source/entity.gd"
+}, {
+"base": "Reference",
 "class": "EntityController",
 "language": "GDScript",
 "path": "res://source/entities/controller.gd"
@@ -96,6 +101,7 @@ _global_script_class_icons={
 "EnemyController": "",
 "EnemyJumper": "",
 "EnemyWanderer": "",
+"Entity": "",
 "EntityController": "",
 "PickUp": "",
 "PickUpController": "",
