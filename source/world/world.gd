@@ -43,10 +43,9 @@ func __attack_entity(entity: EntityController) -> void:
 	var options: Dictionary = {
 		'damage': entity.damage,
 		'direction': entity.direction,
-		'speed': 2
 	}
 
-	var spawn_position: Vector2 = entity.position + entity.direction
+	var spawn_position: Vector2 = entity.position
 	var projectile: ProjectileController = ProjectileController.new(spawn_position, options)
 	self.__connect_entity(projectile)
 
@@ -100,55 +99,39 @@ func __dungeon_complete() -> void:
 
 
 func __move_entity(from: Vector2, to: Vector2, entity: EntityController) -> Vector2:
-	var last_position: Vector2 = from
-	var direction = to - from
-	var distance = direction.length()
+	if !self.__world_interface.can_traverse(entity, to):
+		entity.position = from
+		if entity is ProjectileController:
+			entity.call_deferred("emit_signal", "remove")
+		return from
 
-	for i in distance:
-		var offset = direction.normalized() * (1 + i)
+	if entity.owns_tile(self.__entities_map.get_cellv(from)):
+		self.__entities_map.set_cellv(from, TileMap.INVALID_CELL)
+	self.__entities_map.set_cellv(to, entity.tile_index, entity.tile_flip)
 
-		yield(self.get_tree().create_timer(0.1), "timeout")
-
-		if !self.__world_interface.can_traverse(entity, from + offset):
-			if entity is ProjectileController:
-				entity.call_deferred("emit_signal", "remove")
-			break
-
-		self.__entities_map.set_cellv(last_position, TileMap.INVALID_CELL)
-		last_position = from + offset
-		self.__entities_map.set_cellv(last_position, entity.tile_index, entity.tile_flip)
-
-	if last_position != to:
-		entity.position = last_position
-
-	return last_position
+	return to
 
 
 func __move_player(from: Vector2, to: Vector2, entity: EntityController) -> void:
-	self.__can_update = false
-
-	if from != to:
-		yield(self.__move_entity(from, to, entity), "completed")
-
-	self.__center_camera_on_entity(entity)
-
 	for attack in self.__attacks:
 		attack.update()
+
+	if from != to:
+		self.__move_entity(from, to, entity)
+
+	self.__center_camera_on_entity(entity)
 
 	for enemy in self.__enemies:
 		enemy.update()
 		enemy.telegraph(entity, self.__world_interface)
-
-	self.__can_update = true
 
 
 func __remove_entity(entity: EntityController) -> void:
 	var index = self.__entities.find(entity)
 	if index == -1:
 		Logger.warn("Could not remove entity, doesn't belong in entites array")
-		return
 
-	self.__entities.remove(index)
+	self.__entities.erase(entity)
 
 	if entity is EnemyController:
 		self.__enemies.erase(entity)

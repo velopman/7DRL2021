@@ -36,6 +36,10 @@ func pick_up(type: int) -> void:
 			self.damage += 1
 
 
+func owns_tile(tile: int) -> bool:
+	return tile in [12, 13, 14]
+
+
 func update() -> void:
 	for input in self.INPUT_MAP.keys():
 		if Input.is_action_just_pressed(input):

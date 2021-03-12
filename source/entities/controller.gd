@@ -29,5 +29,9 @@ func handle_collision(_entity: EntityController) -> bool:
 	return true
 
 
+func owns_tile(tile: int) -> bool:
+	return self.tile_index == tile
+
+
 func update() -> void:
 	pass
