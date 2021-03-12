@@ -6,6 +6,7 @@ var speed: int = 1
 
 func _init(position: Vector2, options: Dictionary = {}).(position, options) -> void:
 	self.speed = options.get('speed', self.speed)
+	self.tile_index = 20
 
 
 func update() -> void:

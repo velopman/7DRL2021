@@ -11,10 +11,17 @@ const INPUT_MAP = {
 	"right": Vector2.RIGHT,
 }
 
+const TILE_MAP = {
+	"up": 14,
+	"down": 13,
+	"left": 12,
+	"right": 12
+}
+
 
 # Lifecycle methods
 func _init(position: Vector2, options: Dictionary = {}).(position, options) -> void:
-	self.tile_index = 10
+	self.tile_index = 12
 
 
 # Public methods
@@ -34,10 +41,13 @@ func update() -> void:
 		if Input.is_action_just_pressed(input):
 			var from = self.position
 			self.direction = self.INPUT_MAP[input]
+			self.tile_index = self.TILE_MAP[input]
+			self.tile_flip = input == "left"
 			self.position += self.direction
 
 			self.emit_signal("move", from, self.position)
 			break
+
 
 	if Input.is_action_just_pressed("attack"):
 		self.emit_signal("attack")

@@ -3,7 +3,7 @@ class_name EnemyController extends EntityController
 
 # Lifecycle methods
 func _init(position: Vector2, options: Dictionary = {}).(position, options) -> void:
-	self.tile_index = 1
+	self.tile_index = 16
 
 
 # Public methods

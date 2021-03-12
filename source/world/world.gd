@@ -116,7 +116,7 @@ func __move_entity(from: Vector2, to: Vector2, entity: EntityController) -> Vect
 
 		self.__entities_map.set_cellv(last_position, TileMap.INVALID_CELL)
 		last_position = from + offset
-		self.__entities_map.set_cellv(last_position, entity.tile_index)
+		self.__entities_map.set_cellv(last_position, entity.tile_index, entity.tile_flip)
 
 	if last_position != to:
 		entity.position = last_position
