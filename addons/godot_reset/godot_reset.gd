@@ -48,17 +48,8 @@ func __poll():
 
 		var data = result.result
 
-		if !data is Dictionary:
-			return
-
-		match data["type"]:
-			"set_color":
-				if !data.has_all(["color", "username"]):
-					return
-
-				var username: String = data["username"]
-				var color: String = data["color"]
-
+		match data:
+			{"type": "set_color", "color": var color, "username": var username}:
 				if !self.__regex["set_color"].search(color.to_lower()):
 					print("Sorry %s, %s is an invalid color" % [username, color])
 					return
@@ -75,3 +66,5 @@ func __poll():
 					"interface/theme/base_color",
 					color
 				)
+			_:
+				print("invalid payload: ", typeof(data), data)

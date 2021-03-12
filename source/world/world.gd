@@ -135,6 +135,7 @@ func __remove_entity(entity: EntityController) -> void:
 
 	if entity is EnemyController:
 		self.__enemies.erase(entity)
+		print("Removing enemy ", self.__enemies.size())
 	elif entity is ProjectileController:
 		self.__attacks.erase(entity)
 
