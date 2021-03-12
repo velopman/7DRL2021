@@ -29,14 +29,14 @@ func can_traverse(entity: EntityController, position: Vector2) -> bool:
 	if self.__world.get_cellv(position) == TileMap.INVALID_CELL:
 		return false
 
-	for other_entity in self.__entities:
-		if entity == other_entity:
+	for other in self.__entities:
+		if entity == other:
 			continue
 
-		if other_entity.position != position:
+		if other.position != position:
 			continue
 
-		return !other_entity.handle_collision(entity)
+		return !other.handle_collision(entity)
 
 	return true
 
