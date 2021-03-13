@@ -213,6 +213,7 @@ func __redraw() -> void:
 
 func __remove_entity(entity: EntityController) -> void:
 	if entity is PlayerController:
+		$camera/user_interface.visible = false
 		TaskManager.clear_queue("screen")
 		self.get_tree().reload_current_scene()
 		return
