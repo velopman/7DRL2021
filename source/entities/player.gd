@@ -2,6 +2,7 @@ class_name PlayerController extends EntityController
 
 
 signal attack(direction)
+signal state_change(health, damage)
 
 
 const INPUT_MAP = {
@@ -21,19 +22,26 @@ const TILE_MAP = {
 
 # Lifecycle methods
 func _init(position: Vector2, options: Dictionary = {}).(position, options) -> void:
+	self.health = 3
 	self.tile_index = 12
 
 
 # Public methods
+func hurt():
+	self.health -= 1
+	self.emit_signal("state_change", self.health, self.damage)
+
+	if self.health <= 0:
+		self.emit_signal("remove")
+
 func pick_up(type: int) -> void:
 	match type:
 		PickUp.Type.health:
-			self.health_max += 1
 			self.health += 1
-		PickUp.Type.potion:
-			self.health = min(self.health + 1, self.health_max)
 		PickUp.Type.damage:
 			self.damage += 1
+
+	self.emit_signal("state_change", self.health, self.damage)
 
 
 func owns_tile(tile: int) -> bool:
@@ -53,5 +61,7 @@ func update() -> void:
 			break
 
 
-	if Input.is_action_just_pressed("attack"):
+	if self.damage && Input.is_action_just_pressed("attack"):
+		self.damage -= 1
 		self.emit_signal("attack")
+		self.emit_signal("state_change", self.health, self.damage)

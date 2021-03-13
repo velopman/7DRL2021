@@ -13,6 +13,7 @@ var portals = []
 var rooms = []
 var room_buffer = []
 var room_count
+var spawn_points = []
 var level_size
 var walls: Array
 var exit: Vector2
@@ -86,6 +87,7 @@ func draw_room(free_regions, spawn_player: bool):
 					self.emit_signal("spawn_player", Vector2(start_x + x, start_y + y))
 				tile_map.set_cell(start_x + x, start_y + y, Tile.F)
 				tile_map_things.set_cell(start_x + x, start_y + y, Tile.P)
+				self.spawn_points.append(Vector2(start_x + x, start_y + y))
 			elif(room_buffer[y][x] == "M"):
 				self.emit_signal("spawn_enemy", Vector2(start_x + x, start_y + y))
 				tile_map.set_cell(start_x + x, start_y + y, Tile.F)
@@ -95,6 +97,7 @@ func draw_room(free_regions, spawn_player: bool):
 			elif(room_buffer[y][x] == "T"):
 				tile_map.set_cell(start_x + x, start_y + y, Tile.F)
 				tile_map_things.set_cell(start_x + x, start_y + y, Tile.T)
+				self.emit_signal("spawn_teleport", Vector2(start_x + x, start_y + y))
 				portals.append(Vector2(start_x + x, start_y + y))
 			else:
 				# error tile so we can figure out if we missed something
@@ -146,6 +149,7 @@ signal load_complete()
 signal spawn_enemy(position)
 signal spawn_pick_up(position)
 signal spawn_player(position)
+signal spawn_teleport(position)
 
 onready var traversable: TileMap = $traversable
 
@@ -167,4 +171,9 @@ func get_room_for_entity(entity: EntityController) -> Rect2:
 			return room
 
 	return Rect2(0.0, 0.0, 0.0, 0.0)
+
+
+func next_room() -> int:
+	self.level_number += 1
+	return self.spawn_points[self.level_number]
 

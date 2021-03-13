@@ -15,6 +15,7 @@ var __attacks: Array = []
 var __can_update: bool = false
 var __enemies: Array = []
 var __entities: Array = []
+var __teleporters: Array = []
 var __player: PlayerController = null
 var __world_interface: WorldInterface = null
 
@@ -27,6 +28,7 @@ func _ready() -> void:
 	self.__dungeon.connect("spawn_enemy", self, "__spawn_enemy")
 	self.__dungeon.connect("spawn_pick_up", self, "__spawn_pick_up")
 	self.__dungeon.connect("spawn_player", self, "__spawn_player")
+	self.__dungeon.connect("spawn_teleport", self, "__spawn_teleport")
 
 	self.__dungeon.initialize()
 
@@ -36,6 +38,9 @@ func _process(_delta: float) -> void:
 		return
 
 	self.__player.update()
+
+	for teleporter in self.__teleporters:
+		teleporter.update()
 
 
 # Private methods
@@ -65,7 +70,7 @@ func __center_camera_on_entity(entity: EntityController, pan: bool = false) -> v
 
 
 func __center_camera_on_position(position: Vector2, pan: bool = false) -> void:
-	self.__camera.offset = self.__world_interface.w2s(position)
+	self.__camera.position = self.__world_interface.w2s(position)
 
 
 func __center_camera_on_room(room: Rect2, pan: bool = false) -> void:
@@ -80,6 +85,7 @@ func __connect_entity(entity: EntityController) -> void:
 	if entity is PlayerController:
 		entity.connect("move", self, "__move_player", [entity])
 		entity.connect("attack", self, "__attack_entity", [entity])
+		entity.connect("state_change", $camera/user_interface, "state_change")
 	else:
 		entity.connect("move", self, "__move_entity", [entity])
 
@@ -128,6 +134,9 @@ func __handle_collision(entity: EntityController, other: EntityController) -> vo
 		[Entity.ENEMY, Entity.PROJECTILE]:
 			self.__remove_entity(entity)
 			self.__remove_entity(other)
+		[Entity.ENEMY, Entity.PLAYER]:
+			self.__remove_entity(other if entity is PlayerController else entity)
+			self.__player.hurt()
 		[Entity.NONE, Entity.PROJECTILE]:
 			self.__remove_entity(entity)
 
@@ -163,12 +172,32 @@ func __redraw() -> void:
 
 
 func __remove_entity(entity: EntityController) -> void:
+	if entity is PlayerController:
+		self.get_tree().reload_current_scene()
+		return
+
 	self.__entities.erase(entity)
 
 	if entity is EnemyController:
 		self.__enemies.erase(entity)
+
+		var current_room: Rect2 = self.__dungeon.get_room_for_entity(self.__player)
+		var enabled = true
+		for enemy in self.__enemies:
+			if current_room.has_point(enemy.position):
+				enabled = false
+				break
+
+		for teleporter in self.__teleporters:
+			teleporter.enabled = enabled
+
 	elif entity is ProjectileController:
 		self.__attacks.erase(entity)
+		self.__player.pick_up(PickUp.Type.damage)
+	elif entity is TeleportController:
+		var next_location = self.__dungeon.next_room()
+		self.__player.position = next_location
+		self.__move_player(next_location, next_location, self.__player)
 
 
 func __spawn_enemy(position: Vector2) -> void:
@@ -199,3 +228,11 @@ func __spawn_player(position: Vector2) -> void:
 	self.__connect_entity(self.__player)
 
 	self.__entities.append(self.__player)
+
+
+func __spawn_teleport(position: Vector2) -> void:
+	var teleporter = TeleportController.new(position)
+	self.__connect_entity(teleporter)
+
+	self.__entities.append(teleporter)
+	self.__teleporters.append(teleporter)
