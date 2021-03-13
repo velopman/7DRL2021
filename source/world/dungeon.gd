@@ -7,7 +7,7 @@ enum Tile {NW, N, NE, W, F, E, SW, S, SE, T, P, G}
 
 
 # Var for this level
-var level_number = 0
+var level_number = 0 # 0, 1, 2, 3
 var map = []
 var portals = []
 var rooms = []
@@ -27,6 +27,14 @@ onready var tile_map_things = $TileMap_Things
 func draw_level():
 	rooms.clear()
 	tile_map.clear()
+	
+	if(level_number != 0):
+		if level_number == 1:
+			tile_map = $TileMap_Level_Two
+		elif level_number == 2:
+			tile_map = $TileMap_Level
+		elif level_number == 3:
+			tile_map = $TileMap_Level_Four
 
 	room_count = ROOM_COUNT[level_number]
 	level_size = Vector2(room_count * 20, room_count * 24) # Fix this so it's not hard coded
