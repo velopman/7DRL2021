@@ -55,7 +55,11 @@ class Lerp:
 
 		var variant_delta = lerp(self.__variant_start, self.__variant_end,
 			self.__elapsed / self.__duration)
-		self.__callback.call_func(variant_delta)
+		if self.__callback.is_valid():
+			self.__callback.call_func(variant_delta)
+		else:
+			self._completed = true
+			return
 
 		if self.__elapsed >= self.__duration:
 			self._completed = true
