@@ -1,6 +1,7 @@
 class_name EntityController
 
 
+signal attack()
 signal move(from, to)
 signal remove()
 signal telegraph(from, to)

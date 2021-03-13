@@ -36,6 +36,7 @@ func telegraph(player: PlayerController, world: WorldInterface) -> void:
 	var distance_to_player: float = self.position.distance_to(player.position)
 	if distance_to_player <= 1.5:
 		self.attacking = 5
+		self.emit_signal("attack")
 		return
 
 	if distance_to_player < 5 && world.has_line_of_sight(self, player):

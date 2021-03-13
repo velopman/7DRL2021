@@ -13,6 +13,7 @@ onready var __ray: RayCast2D = $line_of_sight
 
 var __attacks: Array = []
 var __can_update: bool = false
+var __damages: Array = []
 var __enemies: Array = []
 var __entities: Array = []
 var __teleporters: Array = []
@@ -44,7 +45,20 @@ func _process(_delta: float) -> void:
 
 
 # Private methods
-func __attack_entity(entity: EntityController) -> void:
+func __attack_enemy(entity: EntityController) -> void:
+	var spaces: Array = []
+	var rotation: float = Vector2.UP.angle_to(entity.direction)
+
+	for i in 3:
+#		var space: Vector2 = Vector2(-1 + i, 1.0).rotated(-rotation) + entity.position
+		var space: Vector2 = entity.position + entity.direction
+		var damage: DamageController = DamageController.new(space)
+		self.__connect_entity(damage)
+		self.__entities.append(damage)
+		self.__damages.append(damage)
+
+
+func __attack_player(entity: EntityController) -> void:
 	var options: Dictionary = {
 		'damage': entity.damage,
 		'direction': entity.direction,
@@ -84,8 +98,11 @@ func __center_camera_on_room(room: Rect2, pan: bool = false) -> void:
 func __connect_entity(entity: EntityController) -> void:
 	if entity is PlayerController:
 		entity.connect("move", self, "__move_player", [entity])
-		entity.connect("attack", self, "__attack_entity", [entity])
+		entity.connect("attack", self, "__attack_player", [entity])
 		entity.connect("state_change", $camera/user_interface, "state_change")
+	elif entity is EnemyController:
+		entity.connect("move", self, "__move_entity", [entity])
+		entity.connect("attack", self, "__attack_enemy", [entity])
 	else:
 		entity.connect("move", self, "__move_entity", [entity])
 
@@ -161,6 +178,11 @@ func __move_player(from: Vector2, to: Vector2, entity: EntityController) -> void
 		enemy.update()
 		enemy.telegraph(entity, self.__world_interface)
 
+
+	for damage in self.__damages:
+		damage.update()
+
+
 	self.__redraw()
 
 
@@ -198,6 +220,10 @@ func __remove_entity(entity: EntityController) -> void:
 		var next_location = self.__dungeon.next_room()
 		self.__player.position = next_location
 		self.__move_player(next_location, next_location, self.__player)
+	elif entity is DamageController:
+		self.__damages.erase(entity)
+		if entity.position == self.__player.position:
+			self.__player.hurt()
 
 
 func __spawn_enemy(position: Vector2) -> void:

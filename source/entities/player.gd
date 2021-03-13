@@ -1,7 +1,5 @@
 class_name PlayerController extends EntityController
 
-
-signal attack(direction)
 signal state_change(health, damage)
 
 
