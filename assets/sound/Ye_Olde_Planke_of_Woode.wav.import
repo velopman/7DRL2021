@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/Ye_Olde_Planke_of_Woode.wav-35fbedded5fb47475a9ed3d4c0f949aa.sample"
+
+[deps]
+
+source_file="res://assets/sound/Ye_Olde_Planke_of_Woode.wav"
+dest_files=[ "res://.import/Ye_Olde_Planke_of_Woode.wav-35fbedded5fb47475a9ed3d4c0f949aa.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

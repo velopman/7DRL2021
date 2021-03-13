@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/Springtime_Adventure.wav-79c2b3b8e6b64d21e0c0141a1af2c0f6.sample"
+
+[deps]
+
+source_file="res://assets/sound/Springtime_Adventure.wav"
+dest_files=[ "res://.import/Springtime_Adventure.wav-79c2b3b8e6b64d21e0c0141a1af2c0f6.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
