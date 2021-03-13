@@ -95,6 +95,19 @@ func __center_camera_on_room(room: Rect2, pan: bool = false) -> void:
 	var room_center = room.position + room.size * 0.5
 	self.__center_camera_on_position(room_center, pan)
 
+func __change_level() -> void:
+	for entity in self.__entities:
+		if entity is PlayerController:
+			continue
+
+		self.__remove_entity(entity)
+
+	self.__dungeon.next_level()
+	var next_location = self.__dungeon.next_room()
+
+	self.__player.position = next_location
+	self.__move_player(next_location, next_location, self.__player)
+
 
 func __connect_entity(entity: EntityController) -> void:
 	if entity is PlayerController:
@@ -111,15 +124,17 @@ func __connect_entity(entity: EntityController) -> void:
 
 
 func __dungeon_complete() -> void:
+	print("Hello world", self.__dungeon.get_traversable().get_used_cells().size())
 	self.__world_interface = WorldInterface.new(
 		self.__ray,
 		self.__dungeon.get_traversable(),
 		self.__entities
 	)
 
-	self.__world_interface.connect("collision_detected", self, "__handle_collision")
-	self.__camera.show_next_story(false)
-	TaskManager.add_queue("screen", Task.RunFunc.new(funcref(self, "set"), ["__can_update", true]))
+	if self.__dungeon.level_number == 0:
+		self.__world_interface.connect("collision_detected", self, "__handle_collision")
+		self.__camera.show_next_story(false)
+		TaskManager.add_queue("screen", Task.RunFunc.new(funcref(self, "set"), ["__can_update", true]))
 
 	self.__redraw()
 	self.__center_camera_on_entity(self.__player, false)
@@ -232,7 +247,11 @@ func __remove_entity(entity: EntityController) -> void:
 		print(self.__enemies.size())
 
 		if self.__enemies.size() == 0:
-			self.__camera.show_next_story()
+			self.__camera.show_next_story(true, [
+				Task.RunFunc.new(
+					funcref(self, "__change_level")
+				)
+			])
 		else:
 			var next_location = self.__dungeon.next_room()
 			TaskManager.add_queue("screen", self.__camera.create_fade_out(0.5))
@@ -276,6 +295,9 @@ func __spawn_pick_up(position: Vector2) -> void:
 
 
 func __spawn_player(position: Vector2) -> void:
+	if self.__player:
+		return
+
 	var options: Dictionary = {
 		'damage': self.DAMAGE_PLAYER,
 		'health': self.HEALTH_PLAYER

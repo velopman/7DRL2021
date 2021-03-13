@@ -33,7 +33,7 @@ func create_fade_out(duration: float, color: Color = Color.black) -> Task.Lerp:
 		"set_frame_color"))
 
 
-func show_next_story(fade_out: bool = true) -> void:
+func show_next_story(fade_out: bool = true, load_tasks: Array = []) -> void:
 	TaskManager.add_queue("screen", Task.RunFunc.new(
 		funcref(self.__user_interface, "set_visible"),
 		[false]
@@ -44,6 +44,9 @@ func show_next_story(fade_out: bool = true) -> void:
 		funcref(self.__stories[self.__next_story], "set_visible"),
 		[true]
 	))
+
+	if load_tasks:
+		TaskManager.add_queue_multiple("screen", load_tasks)
 
 	TaskManager.add_queue("screen", Task.Wait.new(1.0))
 	TaskManager.add_queue("screen", Task.Lerp.new(

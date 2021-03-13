@@ -28,6 +28,8 @@ onready var tile_map_things = $TileMap_Things
 func draw_level():
 	rooms.clear()
 	tile_map.clear()
+	self.spawn_points.clear()
+	self.traversable.clear()
 
 	if(level_number != 0):
 		if level_number == 1:
@@ -38,7 +40,7 @@ func draw_level():
 			tile_map = $TileMap_Level_Four
 
 	room_count = ROOM_COUNT[level_number]
-	level_size = Vector2(room_count * 20, room_count * 24) # Fix this so it's not hard coded
+	level_size = Vector2(room_count * 50, room_count * 50) # Fix this so it's not hard coded
 	for x in range(level_size.x):
 		map.append([])
 		for y in range(level_size.y):
@@ -50,6 +52,9 @@ func draw_level():
 		draw_room(free_regions, i == 0)
 		if free_regions.empty():
 			break
+
+	populate_traversable()
+	self.emit_signal("load_complete")
 
 # Draws all the rooms in the level 18x32-room size 24x38 to have 3 clear rows on each side?
 func draw_room(free_regions, spawn_player: bool):
@@ -149,9 +154,6 @@ func cut_regions(free_regions, region_to_cut):
 # Called when the node enters the scene tree for the first time.
 func initialize():
 	draw_level()
-	populate_traversable()
-
-	self.emit_signal("load_complete")
 
 
 signal load_complete()
@@ -186,3 +188,8 @@ func next_room() -> int:
 	self.room_number += 1
 	return self.spawn_points[self.room_number]
 
+
+func next_level() -> void:
+	self.room_number = -1
+	self.level_number += 1
+	self.draw_level()
