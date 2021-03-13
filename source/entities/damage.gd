@@ -15,7 +15,6 @@ func handle_collision(entity: EntityController) -> bool:
 
 
 func update() -> void:
-	print(self.turns_remaining)
 	self.turns_remaining -= 1
 	if self.turns_remaining == 0:
 		self.emit_signal("remove")
