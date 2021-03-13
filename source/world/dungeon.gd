@@ -27,7 +27,7 @@ onready var tile_map_things = $TileMap_Things
 func draw_level():
 	rooms.clear()
 	tile_map.clear()
-	
+
 	if(level_number != 0):
 		if level_number == 1:
 			tile_map = $TileMap_Level_Two

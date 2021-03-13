@@ -10,6 +10,7 @@ onready var __camera: Camera2D = $camera
 onready var __dungeon: Dungeon = $dungeon
 onready var __entities_map: TileMap = $entities
 onready var __ray: RayCast2D = $line_of_sight
+onready var __user_interface: TileMap = $camera/user_interface
 
 var __attacks: Array = []
 var __can_update: bool = false
@@ -99,7 +100,7 @@ func __connect_entity(entity: EntityController) -> void:
 	if entity is PlayerController:
 		entity.connect("move", self, "__move_player", [entity])
 		entity.connect("attack", self, "__attack_player", [entity])
-		entity.connect("state_change", $camera/user_interface, "state_change")
+		entity.connect("state_change", self.__user_interface, "state_change")
 	elif entity is EnemyController:
 		entity.connect("move", self, "__move_entity", [entity])
 		entity.connect("attack", self, "__attack_enemy", [entity])
@@ -212,6 +213,8 @@ func __remove_entity(entity: EntityController) -> void:
 
 		for teleporter in self.__teleporters:
 			teleporter.enabled = enabled
+
+		self.__user_interface.increment_score()
 
 	elif entity is ProjectileController:
 		self.__attacks.erase(entity)
