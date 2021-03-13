@@ -1,42 +1,11 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://source/world/world.gd" type="Script" id=1]
 [ext_resource path="res://source/world/dungeon.tscn" type="PackedScene" id=2]
 [ext_resource path="res://assets/art/level_one.tres" type="TileSet" id=3]
 [ext_resource path="res://source/helpers/camera.tscn" type="PackedScene" id=4]
-[ext_resource path="res://assets/art/entities_sprites.png" type="Texture" id=5]
+[ext_resource path="res://assets/art/user_interface.tres" type="TileSet" id=5]
 [ext_resource path="res://source/user_interface.gd" type="Script" id=6]
-[ext_resource path="res://assets/fonts/dogica.tres" type="DynamicFont" id=7]
-
-[sub_resource type="TileSet" id=1]
-0/name = "entities_sprites.png 0"
-0/texture = ExtResource( 5 )
-0/tex_offset = Vector2( 0, 0 )
-0/modulate = Color( 1, 1, 1, 1 )
-0/region = Rect2( 64, 48, 16, 16 )
-0/tile_mode = 0
-0/occluder_offset = Vector2( 0, 0 )
-0/navigation_offset = Vector2( 0, 0 )
-0/shape_offset = Vector2( 0, 0 )
-0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
-0/shape_one_way = false
-0/shape_one_way_margin = 0.0
-0/shapes = [  ]
-0/z_index = 0
-1/name = "entities_sprites.png 1"
-1/texture = ExtResource( 5 )
-1/tex_offset = Vector2( 0, 0 )
-1/modulate = Color( 1, 1, 1, 1 )
-1/region = Rect2( 0, 32, 16, 16 )
-1/tile_mode = 0
-1/occluder_offset = Vector2( 0, 0 )
-1/navigation_offset = Vector2( 0, 0 )
-1/shape_offset = Vector2( 0, 0 )
-1/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
-1/shape_one_way = false
-1/shape_one_way_margin = 0.0
-1/shapes = [  ]
-1/z_index = 0
 
 [node name="main" type="Node2D"]
 script = ExtResource( 1 )
@@ -67,20 +36,8 @@ zoom = Vector2( 0.5, 0.5 )
 
 [node name="user_interface" type="TileMap" parent="camera"]
 scale = Vector2( 2, 2 )
-tile_set = SubResource( 1 )
+tile_set = ExtResource( 5 )
 cell_size = Vector2( 16, 16 )
 format = 1
-tile_data = PoolIntArray( -196617, 0, 0, -196616, 0, 0, -196615, 0, 0, -131081, 1, 0 )
+tile_data = PoolIntArray( -262153, 0, 0, -262152, 0, 0, -262151, 0, 0, -196617, 2, 0, 196600, 3, 0, 262135, 5, 0, 262136, 4, 0, 262137, 7, 0, 327672, 6, 0 )
 script = ExtResource( 6 )
-
-[node name="score" type="Label" parent="camera/user_interface"]
-margin_left = -142.84
-margin_top = -74.8809
-margin_right = -62.8401
-margin_bottom = -60.8809
-rect_scale = Vector2( 0.5, 0.5 )
-custom_fonts/font = ExtResource( 7 )
-text = "score: 0"
-__meta__ = {
-"_edit_use_anchors_": false
-}
