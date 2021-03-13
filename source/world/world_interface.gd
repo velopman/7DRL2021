@@ -30,12 +30,7 @@ func has_line_of_sight(from: EntityController, to: EntityController) -> bool:
 func can_traverse(entity: EntityController, position: Vector2) -> bool:
 	if self.__world.get_cellv(position) == TileMap.INVALID_CELL:
 		self.emit_signal("collision_detected", entity, null)
-
 		return false
-
-	if entity is ProjectileController:
-		print("No collision with world", self.__world.get_cellv(position))
-
 
 	for other in self.__entities:
 		if entity == other:

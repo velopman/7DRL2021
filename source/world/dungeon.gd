@@ -5,7 +5,7 @@ const ROOM_COUNT = [1, 3, 3, 3] # Amount of rooms
 #Used tiles
 enum Tile {NW, N, NE, W, F, E, SW, S, SE, T, P, G}
 
-
+"res://assets/sound/level_one.wav"
 # Var for this level
 var level_number = 0 # 0, 1, 2, 3
 var room_number = 0
@@ -40,7 +40,7 @@ func draw_level():
 			tile_map = $TileMap_Level_Four
 
 	room_count = ROOM_COUNT[level_number]
-	level_size = Vector2(room_count * 50, room_count * 50) # Fix this so it's not hard coded
+	level_size = Vector2((room_count + 1) * 50, (room_count + 1) * 50) # Fix this so it's not hard coded
 	for x in range(level_size.x):
 		map.append([])
 		for y in range(level_size.y):
@@ -53,14 +53,17 @@ func draw_level():
 		if free_regions.empty():
 			break
 
+	if !free_regions.empty():
+		draw_room(free_regions, false, true)
+
 	populate_traversable()
 	self.emit_signal("load_complete")
 
 # Draws all the rooms in the level 18x32-room size 24x38 to have 3 clear rows on each side?
-func draw_room(free_regions, spawn_player: bool):
+func draw_room(free_regions, spawn_player: bool, boss_room: bool = false):
 	var region = free_regions[randi() % free_regions.size()]
 
-	room_buffer = rooms_script.get_room_tiles()
+	room_buffer = rooms_script.get_room_tiles(boss_room)
 	var size_x = room_buffer[0].size()
 	var size_y = room_buffer.size()
 

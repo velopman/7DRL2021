@@ -132,8 +132,8 @@ func __dungeon_complete() -> void:
 		self.__entities
 	)
 
+	self.__world_interface.connect("collision_detected", self, "__handle_collision")
 	if self.__dungeon.level_number == 0:
-		self.__world_interface.connect("collision_detected", self, "__handle_collision")
 		self.__camera.show_next_story(false)
 		TaskManager.add_queue("screen", Task.RunFunc.new(funcref(self, "set"), ["__can_update", true]))
 
@@ -164,6 +164,7 @@ func __handle_collision(entity: EntityController, other: EntityController) -> vo
 	]
 	entities_by_name.sort()
 
+
 	match entities_by_name:
 		[Entity.ENEMY, Entity.PROJECTILE]:
 			self.__remove_entity(entity)
@@ -172,7 +173,6 @@ func __handle_collision(entity: EntityController, other: EntityController) -> vo
 			self.__remove_entity(other if entity is PlayerController else entity)
 			self.__player.hurt()
 		[Entity.NONE, Entity.PROJECTILE]:
-			print("hello?")
 			self.__remove_entity(entity)
 
 
@@ -237,16 +237,14 @@ func __remove_entity(entity: EntityController) -> void:
 		if randi() % 10 == 0:
 			self.__spawn_pick_up(entity.position)
 
-		TaskManager.add_queue("screen", self.__camera.create_camera_shake(2.0, 0.2))
+		if self.__player.health > 0:
+			TaskManager.add_queue("screen", self.__camera.create_camera_shake(2.0, 0.2))
 
 	elif entity is ProjectileController:
 		self.__attacks.erase(entity)
 		self.__player.pick_up(PickUp.Type.damage)
 	elif entity is TeleportController:
-
 		self.__can_update = false
-
-		print(self.__enemies.size())
 
 		if self.__enemies.size() == 0:
 			self.__camera.show_next_story(true, [
@@ -276,6 +274,8 @@ func __remove_entity(entity: EntityController) -> void:
 		self.__damages.erase(entity)
 		if entity.position == self.__player.position:
 			self.__player.hurt()
+			if self.__player.health > 0:
+				TaskManager.add_queue("screen", self.__camera.create_camera_shake(2.0, 0.2))
 
 
 func __spawn_enemy(position: Vector2) -> void:
