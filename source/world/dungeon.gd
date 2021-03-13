@@ -1,6 +1,6 @@
 class_name Dungeon extends Node2D
 
-const ROOM_COUNT = [1, 3, 3, 3] # Amount of rooms
+const ROOM_COUNT = [2, 3, 4, 5] # Amount of rooms
 
 #Used tiles
 enum Tile {NW, N, NE, W, F, E, SW, S, SE, T, P, G}
@@ -196,3 +196,7 @@ func next_level() -> void:
 	self.room_number = -1
 	self.level_number += 1
 	self.draw_level()
+
+
+func is_boss_room() -> bool:
+	return self.room_number == self.spawn_points
