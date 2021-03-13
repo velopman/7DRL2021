@@ -118,8 +118,8 @@ func __dungeon_complete() -> void:
 	)
 
 	self.__world_interface.connect("collision_detected", self, "__handle_collision")
-
-	self.__can_update = true
+	self.__camera.show_next_story(false)
+	TaskManager.add_queue("screen", Task.RunFunc.new(funcref(self, "set"), ["__can_update", true]))
 
 	self.__redraw()
 	self.__center_camera_on_entity(self.__player, false)
@@ -196,6 +196,7 @@ func __redraw() -> void:
 
 func __remove_entity(entity: EntityController) -> void:
 	if entity is PlayerController:
+		TaskManager.clear_queue("screen")
 		self.get_tree().reload_current_scene()
 		return
 
@@ -216,13 +217,39 @@ func __remove_entity(entity: EntityController) -> void:
 
 		self.__user_interface.increment_score()
 
+		if randi() % 10 == 0:
+			self.__spawn_pick_up(entity.position)
+
+		TaskManager.add_queue("screen", self.__camera.create_camera_shake(2.0, 0.2))
+
 	elif entity is ProjectileController:
 		self.__attacks.erase(entity)
 		self.__player.pick_up(PickUp.Type.damage)
 	elif entity is TeleportController:
-		var next_location = self.__dungeon.next_room()
-		self.__player.position = next_location
-		self.__move_player(next_location, next_location, self.__player)
+
+		self.__can_update = false
+
+		print(self.__enemies.size())
+
+		if self.__enemies.size() == 0:
+			self.__camera.show_next_story()
+		else:
+			var next_location = self.__dungeon.next_room()
+			TaskManager.add_queue("screen", self.__camera.create_fade_out(0.5))
+			TaskManager.add_queue("screen", Task.RunFunc.new(
+				funcref(self.__player, "set"),
+				["position", next_location]
+			))
+			TaskManager.add_queue("screen", Task.RunFunc.new(
+				funcref(self, "__move_player"),
+				[next_location, next_location, self.__player]
+			))
+			TaskManager.add_queue("screen", Task.RunFunc.new(
+				funcref(self, "set"),
+				["__can_update", true]
+			))
+			TaskManager.add_queue("screen", self.__camera.create_fade_in(0.5))
+
 	elif entity is DamageController:
 		self.__damages.erase(entity)
 		if entity.position == self.__player.position:

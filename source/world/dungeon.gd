@@ -1,6 +1,6 @@
 class_name Dungeon extends Node2D
 
-const ROOM_COUNT = [10, 15, 20, 30, 1] # Amount of rooms
+const ROOM_COUNT = [1, 3, 3, 3] # Amount of rooms
 
 #Used tiles
 enum Tile {NW, N, NE, W, F, E, SW, S, SE, T, P, G}
@@ -8,6 +8,7 @@ enum Tile {NW, N, NE, W, F, E, SW, S, SE, T, P, G}
 
 # Var for this level
 var level_number = 0 # 0, 1, 2, 3
+var room_number = 0
 var map = []
 var portals = []
 var rooms = []
@@ -182,6 +183,6 @@ func get_room_for_entity(entity: EntityController) -> Rect2:
 
 
 func next_room() -> int:
-	self.level_number += 1
-	return self.spawn_points[self.level_number]
+	self.room_number += 1
+	return self.spawn_points[self.room_number]
 
