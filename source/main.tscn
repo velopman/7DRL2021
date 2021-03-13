@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://source/world/world.gd" type="Script" id=1]
 [ext_resource path="res://source/world/dungeon.tscn" type="PackedScene" id=2]
@@ -12,7 +12,6 @@
 [ext_resource path="res://assets/art/story_three.png" type="Texture" id=10]
 [ext_resource path="res://assets/art/story_four.png" type="Texture" id=11]
 [ext_resource path="res://assets/art/story_five.png" type="Texture" id=12]
-[ext_resource path="res://assets/sound/level_one.wav" type="AudioStream" id=13]
 
 [sub_resource type="TileSet" id=1]
 0/name = "entities_sprites.png 0"
@@ -48,11 +47,6 @@
 script = ExtResource( 1 )
 
 [node name="dungeon" parent="." instance=ExtResource( 2 )]
-
-[node name="music_level_one" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 13 )
-volume_db = -23.0
-autoplay = true
 
 [node name="entities" type="TileMap" parent="."]
 tile_set = ExtResource( 3 )

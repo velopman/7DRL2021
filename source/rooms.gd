@@ -4,6 +4,7 @@ onready var room_one_file = 'res://assets/rooms/room_one.txt'
 onready var room_two_file = 'res://assets/rooms/room_two.txt'
 
 func get_room_tiles():
+	return load_room(room_one_file)
 	var random = randi()
 	if(random % 2 == 0):
 		return load_room(room_one_file)

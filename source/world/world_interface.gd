@@ -33,6 +33,10 @@ func can_traverse(entity: EntityController, position: Vector2) -> bool:
 
 		return false
 
+	if entity is ProjectileController:
+		print("No collision with world", self.__world.get_cellv(position))
+
+
 	for other in self.__entities:
 		if entity == other:
 			continue

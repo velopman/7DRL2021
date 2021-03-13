@@ -96,6 +96,8 @@ func __center_camera_on_room(room: Rect2, pan: bool = false) -> void:
 	self.__center_camera_on_position(room_center, pan)
 
 func __change_level() -> void:
+	self.__entities_map.clear()
+
 	for entity in self.__entities:
 		if entity is PlayerController:
 			continue
@@ -124,7 +126,6 @@ func __connect_entity(entity: EntityController) -> void:
 
 
 func __dungeon_complete() -> void:
-	print("Hello world", self.__dungeon.get_traversable().get_used_cells().size())
 	self.__world_interface = WorldInterface.new(
 		self.__ray,
 		self.__dungeon.get_traversable(),
@@ -171,6 +172,7 @@ func __handle_collision(entity: EntityController, other: EntityController) -> vo
 			self.__remove_entity(other if entity is PlayerController else entity)
 			self.__player.hurt()
 		[Entity.NONE, Entity.PROJECTILE]:
+			print("hello?")
 			self.__remove_entity(entity)
 
 
@@ -252,6 +254,7 @@ func __remove_entity(entity: EntityController) -> void:
 					funcref(self, "__change_level")
 				)
 			])
+			TaskManager.add_queue("screen", Task.RunFunc.new(funcref(self, "set"), ["__can_update", true]))
 		else:
 			var next_location = self.__dungeon.next_room()
 			TaskManager.add_queue("screen", self.__camera.create_fade_out(0.5))
