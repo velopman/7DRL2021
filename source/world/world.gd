@@ -224,7 +224,7 @@ func __remove_entity(entity: EntityController) -> void:
 		self.__enemies.erase(entity)
 
 		var current_room: Rect2 = self.__dungeon.get_room_for_entity(self.__player)
-		if self.__enemies.empty() && self.__dungeon.is_boss_room():
+		if self.__enemies.empty():
 			var room_center = current_room.position + current_room.size * 0.5
 			self.__spawn_teleport(room_center)
 

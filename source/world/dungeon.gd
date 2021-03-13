@@ -199,4 +199,4 @@ func next_level() -> void:
 
 
 func is_boss_room() -> bool:
-	return self.room_number == self.spawn_points
+	return self.room_number == self.spawn_points.size()

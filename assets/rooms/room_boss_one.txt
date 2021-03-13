@@ -1,7 +1,7 @@
 NW N N N N N N N N N N N N N N N N N N N N N N N N N N N N N N NE
 W F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F E
 W F F F F F F F F M F F F F F F F F F F F F F M F F F F F F F E
-MW F F F F F F F F F F F F F M F F F F F F F F F F F F F F F F E
+W F F F F F F F F F F F F F M F F F F F F F F F F F F F F F F E
 W F F F F M F F F F F F F F F F F F F F F F F F F F F F F F F E
 W F F F F F F F F F F F F F F F F F F F F F F F F M F F F F F E
 W F F F F F F M F F F F F F F F F F F F F F F F F F F F F F F E
