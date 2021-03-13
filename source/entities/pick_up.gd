@@ -16,5 +16,7 @@ func handle_collision(entity: EntityController) -> bool:
 		entity.pick_up(self.type)
 		self.emit_signal("remove")
 		return false
+	if entity is ProjectileController:
+		entity.emit_signal("remove")
 
 	return true
