@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/level_four.wav-adee2f91cd4110d904dc90077c610e9c.sample"
+
+[deps]
+
+source_file="res://assets/sound/level_four.wav"
+dest_files=[ "res://.import/level_four.wav-adee2f91cd4110d904dc90077c610e9c.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
